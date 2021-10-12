@@ -26,12 +26,13 @@ if DEBUG:
 
 #Read finished list
 finishedList = []
-f = open("Finished.txt", 'r')
-for line in f:
-    finishedCat = lien.rstrip()
-    finishedList.append(finishedCat)
-if f:
-    f.close()
+if os.path.exists("group/Finished.txt"):
+    f = open("group/Finished.txt", 'r')
+    for line in f:
+        finishedCat = lien.rstrip()
+        finishedList.append(finishedCat)
+    if f:
+        f.close()
 
 # selenium driver
 browser = webdriver.Firefox()
@@ -40,6 +41,8 @@ browser = webdriver.Firefox()
 for cat in catlist:
     if cat in finishedList:
         continue
+    if os.path.exists("group/"+cat+".txt"):
+        os.remove("group/"+cat+".txt")
     catFile = open("group/"+cat+".txt",'w+')
     i = 1
     has_reach = False
@@ -52,7 +55,7 @@ for cat in catlist:
         browser.get(url)
 
         # wait to load
-        time.sleep(10)
+        time.sleep(5)
 
         # get value
         try:
@@ -89,5 +92,5 @@ for cat in catlist:
         finishedFile.write(cat+"\n")
     if finishedFile:
         finishedFile.close()
-        
+
 browser.quit()
