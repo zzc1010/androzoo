@@ -29,7 +29,7 @@ finishedList = []
 if os.path.exists("group/Finished.txt"):
     f = open("group/Finished.txt", 'r')
     for line in f:
-        finishedCat = lien.rstrip()
+        finishedCat = line.rstrip()
         finishedList.append(finishedCat)
     if f:
         f.close()
@@ -41,14 +41,14 @@ browser = webdriver.Firefox()
 for cat in catlist:
     if cat in finishedList:
         continue
-    if os.path.exists("group/"+cat+".txt"):
-        os.remove("group/"+cat+".txt")
     catFile = open("group/"+cat+".txt",'w+')
     i = 1
     has_reach = False
     while True:
         # search
         #https://www.androidrank.org/android-most-popular-google-play-apps?start=321&category=all&sort=4&price=all
+	if i>500:
+	    break
         url = 'https://www.androidrank.org/android-most-popular-google-play-apps?category=%s&start=%d&sort=4&price=all&hl=en' % (cat, i)
         if DEBUG:
             print url
@@ -88,7 +88,7 @@ for cat in catlist:
             break
     if catFile:
         catFile.close()
-    with open("Finished", "w+") as finishedFile:
+    with open("group\Finished.txt", "a") as finishedFile:
         finishedFile.write(cat+"\n")
     if finishedFile:
         finishedFile.close()
