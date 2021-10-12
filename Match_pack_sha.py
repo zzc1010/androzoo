@@ -27,6 +27,7 @@ for line in f2:
 if f2:
     f2.close()
 
+
 appMap = {}
 appTimeMap = {}
 print('[Main] Match csv File...')
@@ -40,23 +41,27 @@ for line in f:
     lineArray = line.rstrip().split  #no matter \r or \n
     market = line[10]
     tempPack = line[5][1:-1]
-    if tempPack in packList and market=="play.google.com":
-        sha256 = line[0]
-        vt_scan_date_str = line[8]
-        if pack in appMap.keys():
-            storedDate_str = appTimeMap[pack]
-            vt_scan_date = datetime.strptime(vt_scan_date_str, "%Y-%m-%d %H:%M:%S")
-            storedDate = datetime.strptime(storedDate_str, "%Y-%m-%d %H:%M:%S")
-            if vt_scan_date > storeDate:
+    if tempPack in packList :
+        print(tempPack)
+        if market == "play.google.com":
+            sha256 = line[0]
+            vt_scan_date_str = line[8]
+            if pack in appMap.keys():
+                storedDate_str = appTimeMap[pack]
+                vt_scan_date = datetime.strptime(vt_scan_date_str, "%Y-%m-%d %H:%M:%S")
+                storedDate = datetime.strptime(storedDate_str, "%Y-%m-%d %H:%M:%S")
+                if vt_scan_date > storeDate:
+                    appMap[pack] = sha256
+                    appTimeMap[pack] = vt_scan_date
+            else:
                 appMap[pack] = sha256
-                appTimeMap[pack] = vt_scan_date
-        else:
-            appMap[pack] = sha256
-            appTimeMap[pack] = vt_scan_date_str
+                appTimeMap[pack] = vt_scan_date_str
     #TODO pkg is empty here
 if f:
     f.close()
 
-print(appMap, file=outputFile)
+for pack in appMap.keys():
+    result = "%s.%s" % (pack,appMap[pack])
+    print(result+"\n", file=outputFile)
 if outputFile:
     outputFile.close()
