@@ -6,12 +6,14 @@ import codecs
 
 DEBUG = False
 CATDUMP = 'GPlay_Category.txt'
-
+FinishedPath = "group/Finished.txt"
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
 
 def flushPrint(txt):
     print txt
     sys.stdout.flush()
+
 
 # read category list
 catlist = []
@@ -24,10 +26,10 @@ if f:
 if DEBUG:
     print catlist
 
-#Read finished list
+# Read finished list
 finishedList = []
-if os.path.exists("group/Finished.txt"):
-    f = open("group/Finished.txt", 'r')
+if os.path.exists(FinishedPath):
+    f = open(FinishedPath, 'r')
     for line in f:
         finishedCat = line.rstrip()
         finishedList.append(finishedCat)
@@ -39,17 +41,22 @@ browser = webdriver.Firefox()
 
 # loop category list
 for cat in catlist:
+    print cat + " start."
     if cat in finishedList:
+        print "Skip " + cat
         continue
-    catFile = open("group/"+cat+".txt",'w+')
+    catFile = open("group/" + cat + ".txt", 'w+')
     i = 1
+    j = 0
     has_reach = False
     while True:
         # search
-        #https://www.androidrank.org/android-most-popular-google-play-apps?start=321&category=all&sort=4&price=all
-	if i>500:
-	    break
-        url = 'https://www.androidrank.org/android-most-popular-google-play-apps?category=%s&start=%d&sort=4&price=all&hl=en' % (cat, i)
+        # https://www.androidrank.org/android-most-popular-google-play-apps?start=321&category=all&sort=4&price=all
+        print(str(j), "/", str(i))
+        if i >= 500:
+            break
+        url = 'https://www.androidrank.org/android-most-popular-google-play-apps?category=%s&start=%d&sort=4&price=all&hl=en' % (
+        cat, i)
         if DEBUG:
             print url
         browser.get(url)
@@ -69,28 +76,28 @@ for cat in catlist:
                 pkgsplit = pkglink.get_attribute("href").split("/")
                 if DEBUG:
                     print pkgsplit
-                pkgname = pkgsplit[5]#[0:len(pkgsplit[5])-6]
+                pkgname = pkgsplit[5]  # [0:len(pkgsplit[5])-6]
                 ratingnum = ratingtd.text
                 installnum = installtd.text
 
-                if 'M' not in installnum:
-                    has_reach = True
-                    break
-                txt = '%s\t%s\t%s\t%s' % (pkgname, cat, ratingnum, installnum)
-                flushPrint(txt)
-                catFile.write(txt+"\n")
-
+                # if 'M' not in installnum:
+                #     has_reach = True
+                #     break
+                txt = '%s,%s,%s,%s' % (pkgname, cat, ratingnum, installnum)
+                # flushPrint(txt)
+                catFile.write(txt + "\n")
+                j = j + 1
             if has_reach:
                 break
-
             i = i + 20
+
         except:
             break
     if catFile:
         catFile.close()
-    with open("group\Finished.txt", "a") as finishedFile:
-        finishedFile.write(cat+"\n")
+    with open(FinishedPath, "a") as finishedFile:
+        finishedFile.write(cat + "\n")
     if finishedFile:
         finishedFile.close()
-
+    print cat + " end."
 browser.quit()
