@@ -95,4 +95,4 @@ cat = options.listfile
 #cat = "LIBRARIES_AND_DEMO"
 APPDUMP = 'output/'+cat+'.csv'
 startCrawling(APPDUMP, cat)
-myExit(0)
+myExit(0

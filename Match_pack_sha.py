@@ -7,7 +7,7 @@ curtime = time.strftime("%Y-%m-%d-%H-%M-%S")
 # print('Current Time: ', curtime)
 
 catPath = "group"
-outputDir = "output"
+outputDir = "output_10130939"
 finishedPath = outputDir+"/Finished.txt"
 catFileList = os.listdir(catPath)
 
@@ -28,6 +28,7 @@ if os.path.exists(finishedPath):
     if f:
         f.close()
 
+mkdir(outputDir)
 for cat in catFileList:
     if cat == "Finished.txt":
         continue
@@ -48,10 +49,10 @@ for cat in catFileList:
         sys.stdout.flush()
 
 
-    print('[Main] Read pack File...')
+    print('[Main] Read pack File...', cat)
     f2 = open(packFile, 'r')
     for line in f2:
-        pack = line.rstrip().split("\t")[0]  # no matter \r or \n
+        pack = line.rstrip().split(",")[0]  # no matter \r or \n
         packList.append(pack)
     if f2:
         f2.close()
@@ -59,7 +60,7 @@ for cat in catFileList:
     appMap = {}
     appTimeMap = {}
     vercodeMap = {}
-    print('[Main] Match csv File...')
+    print('[Main] Match csv File...', cat)
     flush()
     f = open(csvFile, 'r')
     i = 0
